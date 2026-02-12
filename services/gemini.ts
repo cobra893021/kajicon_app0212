@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { DiagnosisContent } from "../types";
 
 export const fetchDiagnosisFromGemini = async (
@@ -31,7 +31,7 @@ export const fetchDiagnosisFromGemini = async (
     console.warn("Could not reach limit endpoint, proceeding with diagnosis.", err);
   }
 
-  const ai = new GoogleGenAI({ apiKey: apiKey });
+  const genAI = new GoogleGenerativeAI(apiKey);
 
   // 安定版のGemini 3 Flashを使用
   const modelId = "gemini-3-flash-preview";
