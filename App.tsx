@@ -261,7 +261,7 @@ const App: React.FC = () => {
                       */}
                       <img 
                         src="https://drive.google.com/thumbnail?id=1vq9POr6PHLYr7Z0pYFIF5PwrCvpuzUfp&sz=w400&v=3" 
-                        className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg relative z-10"
+                        className="w-20 h-20 rounded-full object-cover object-top border-4 border-white shadow-lg relative z-10"
                         alt="Profile"
                         onError={(e) => {
                           // Fallback to a placeholder if the drive link fails
