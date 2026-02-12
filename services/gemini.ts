@@ -5,11 +5,11 @@ export const fetchDiagnosisFromGemini = async (
   animalName: string,
   groupData: any
 ): Promise<DiagnosisContent> => {
-  const apiKey = process.env.API_KEY;
+ const apiKey = (window as any).env?.API_KEY || process.env.API_KEY;
   
   if (!apiKey) {
     console.error("API Key is missing in environment variables.");
-    throw new Error("API Key configuration error");
+    throw new Error("API_KEY_MISSING");
   }
 
   // Check Daily Limit via Server API
