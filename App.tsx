@@ -268,9 +268,7 @@ const App: React.FC = () => {
                           e.currentTarget.src = "https://placehold.co/100x100?text=K";
                         }}
                       />
-                      <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-1.5 rounded-full border-2 border-white z-20">
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
+                     
                     </div>
                     <div>
                       <div className="font-bold text-slate-800 text-xl leading-tight mb-1">カジコン</div>
