@@ -41,7 +41,7 @@ const LoadingOverlay: React.FC = () => {
 };
 
 const FeatureItem: React.FC<{ icon: React.ReactNode, title: string, desc: string }> = ({ icon, title, desc }) => (
-  <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+  <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center">
     <div className="w-12 h-12 bg-[#336d99]/10 rounded-xl flex items-center justify-center text-[#336d99] mb-4">
       {icon}
     </div>
