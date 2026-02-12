@@ -5,35 +5,34 @@ export const fetchDiagnosisFromGemini = async (
   animalName: string,
   groupData: any
 ): Promise<DiagnosisContent> => {
-  // 1. Vercelのブラウザ側で読み込むための修正（最重要）
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = process.env.API_KEY;
   
   if (!apiKey) {
     console.error("API Key is missing in environment variables.");
     throw new Error("API Key configuration error");
   }
 
-  // リミットチェックの処理（そのまま維持）
+  // Check Daily Limit via Server API
   try {
     const limitRes = await fetch('/api/check-limit', { method: 'POST' });
     if (!limitRes.ok) {
       if (limitRes.status === 429) {
         throw new Error("DAILY_LIMIT_REACHED");
       }
+      // If endpoint doesn't exist (e.g. dev environment without server.js), we might want to proceed or warn.
+      // For now, we assume if it fails with other errors, we proceed (or you can choose to block).
       console.warn("Limit check failed, proceeding...", limitRes.statusText);
     }
   } catch (err: any) {
+    // If we are strictly enforcing, we should rethrow if it's the specific limit error
     if (err.message === "DAILY_LIMIT_REACHED") {
       throw err;
     }
     console.warn("Could not reach limit endpoint, proceeding with diagnosis.", err);
   }
 
-  // 2. クラス名を最新版に修正
   const genAI = new GoogleGenerativeAI(apiKey);
 
-  // 3. モデル名は、お使いになりたいプレビュー名を指定
-  const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
   const prompt = `
 あなたはベテランの個性心理学診断士（カジコン）です。
