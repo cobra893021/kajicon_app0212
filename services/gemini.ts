@@ -83,7 +83,7 @@ ${JSON.stringify(groupData || {})}
 `;
 
   try {
-    const response = await genAI.getGenerativeModel({ model: "..." }).generateContent(...)
+    const response = await ai.models.generateContent(...)
       model: modelId,
       contents: prompt,
       config: {
