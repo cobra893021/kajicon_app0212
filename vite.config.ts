@@ -8,11 +8,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    define: {
-      // Vital: Verify that API_KEY is correctly exposed to the browser
-      // This fix ensures `process.env.API_KEY` works in Vite dev server
-      'process.env.API_KEY': JSON.stringify(env.API_KEY),
-    },
+   define: {
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
+  },
     build: {
       outDir: 'dist',
     }
