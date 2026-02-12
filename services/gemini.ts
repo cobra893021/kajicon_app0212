@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai-ai";
+import { GoogleGenAI } from "@google/generative-ai";
 import { DiagnosisContent } from "../types";
 
 export const fetchDiagnosisFromGemini = async (
