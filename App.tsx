@@ -69,7 +69,8 @@ const App: React.FC = () => {
   const getDiagnosisFromBackend = async (animalName: string, groupData: any, selectedGender: 'male' | 'female') => {
     const dataString = JSON.stringify(groupData, null, 2);
     const genderLabel = selectedGender === 'male' ? '男性' : '女性';
-    const genderSpecificKey = selectedGender === 'male' ? 'maleTraits' : 'femaleTraits';
+    const oppositeGenderKey = selectedGender === 'male' ? 'femaleTraits' : 'maleTraits';
+    const targetGenderKey = selectedGender === 'male' ? 'maleTraits' : 'femaleTraits';
 
     const prompt = `あなたは「動物占い」のキャラクター性と「サイグラム」の構造的分析を融合させる、中小企業診断士の資格を持つ経営コンサルタントです。
     対象者は【${genderLabel}】です。以下の【診断用生データ】を読み込み、プロフェッショナルなプロファイリングレポートを作成してください。
@@ -79,8 +80,8 @@ const App: React.FC = () => {
 
     【レポート作成の絶対ルール】
     1. 出力テキスト内に「動物の名前（例：猿、チーター等）」や「グループコード（例：A8、F1等）」を一切含めないでください。
-    2. 診断の舞台裏を感じさせず、一人の人物に対する「純粋な行動心理分析」としてリライトしてください。
-    3. 対象者が【${genderLabel}】であることを踏まえ、生データの【${genderSpecificKey}】を重点的に分析に反映させてください。
+    2. 対象者が【${genderLabel}】であることを踏まえ、生データの【${targetGenderKey}】を重点的に分析に反映させてください。
+    3. 重要：今回は【${genderLabel}】の診断であるため、JSON内の【${oppositeGenderKey}】（選択されていない性別の項目）は必ず「空文字 ("")」にしてください。
     4. 各項目は、生データの値をビジネス・マネジメントの観点から要約・補完してください。
     5. 比率として「動物占いデータ：サイグラムデータ」を「6：4」で構成してください。
     6. JSONのキー名は以下を厳守し、指定された文字数で記述してください。
@@ -88,8 +89,8 @@ const App: React.FC = () => {
     {
       "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（250文字程度）",
       "lifeTrend": "【生データの lifeTrend】を基にした人生のバイオリズムと戦略アドバイス（200文字程度）",
-      "femaleTraits": "対象者が【${genderLabel}】であることを踏まえ、対人関係における受容力や感性の特徴を分析（150文字程度）",
-      "maleTraits": "対象者が【${genderLabel}】であることを踏まえ、決断力やリーダーシップの傾向を分析（150文字程度）",
+      "femaleTraits": "${selectedGender === 'female' ? '女性的側面から見た資質（150文字程度）' : ''}",
+      "maleTraits": "${selectedGender === 'male' ? '男性的側面から見た資質（150文字程度）' : ''}",
       "work": "【生データの work】を基にした具体的なビジネス適性とキャリアプラン（250文字程度）",
       "psychegram": {
         "features": "【生データの psychegram.features】を基にした深層心理の特徴（150文字程度）",
@@ -205,13 +206,8 @@ const App: React.FC = () => {
                   行動特性を導き出します。
                 </p>
                 
-                {/* 【入力エリア】
-                  w-full と max-w-3xl で全体の幅を確保。
-                  sm:flex-row で横一列に配置し、両端を揃える。
-                */}
                 <div className="bg-white p-2 sm:p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 w-full max-w-3xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
                   
-                  {/* 生年月日：flex-[2] で多めに幅を取る */}
                   <div className="flex-[2] relative min-w-[180px]">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <Search className="h-5 w-5 text-slate-400" />
@@ -229,7 +225,6 @@ const App: React.FC = () => {
                     />
                   </div>
                   
-                  {/* 性別選択：flex-1。relative と appearance-none でカスタム矢印を表示 */}
                   <div className="flex-1 relative flex items-center min-w-[100px] sm:min-w-[120px]">
                     <select 
                       value={gender}
@@ -239,13 +234,11 @@ const App: React.FC = () => {
                       <option value="female">女性</option>
                       <option value="male">男性</option>
                     </select>
-                    {/* カスタム▼マーク */}
                     <div className="absolute right-4 pointer-events-none flex items-center">
                       <span className="text-[#336d99] text-[10px] transform scale-x-125">▼</span>
                     </div>
                   </div>
 
-                  {/* 診断ボタン：flex-[1.2] で調整 */}
                   <button 
                     onClick={handleDiagnoseClick}
                     disabled={loading}
