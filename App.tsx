@@ -235,9 +235,14 @@ const App: React.FC = () => {
                     className="bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 px-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center"
                     style={{ minWidth: '100px' }}
                   >
-                    <option value="female">女性</option>
-                    <option value="male">男性</option>
-                  </select>
+                   <option value="female">女性</option>
+    <option value="male">男性</option>
+  </select>
+  {/* ▼マークを絶対配置で重ねる */}
+  <div className="absolute right-3 pointer-events-none text-[#336d99] text-[10px]">
+    ▼
+  </div>
+</div>
 
                   <button 
                     onClick={handleDiagnoseClick}
