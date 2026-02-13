@@ -1,26 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { calculateDiagnosis } from './services/calculator';
-import { fetchDiagnosisFromGemini } from './services/gemini';
+// fetchDiagnosisFromGemini のインポートを削除（バックエンド経由にするため）
 import ResultCard from './components/ResultCard';
 import { DiagnosisContent } from './types';
 import { TrendingUp, ShieldCheck, Users, Search, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 
 // --- Components ---
-
 const LoadingOverlay: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center">
         <div className="relative mb-6">
-          {/* Character Icon with Swing Animation */}
           <div className="relative">
-            {/* Glow effect */}
             <div className="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-30 animate-pulse"></div>
-            
-            {/* 
-              IMPORTANT: 
-              Loading Screen uses the FACE icon from Google Drive.
-            */}
             <img 
               src="https://drive.google.com/thumbnail?id=1z-0tpNxhNXjVJ8Iuhdh_PcOiAip6QC5X&sz=w400" 
               alt="Loading..." 
@@ -51,7 +43,6 @@ const FeatureItem: React.FC<{ icon: React.ReactNode, title: string, desc: string
 );
 
 // --- Main App ---
-
 const App: React.FC = () => {
   const [birthDate, setBirthDate] = useState<string>('');
   const [result, setResult] = useState<{
@@ -75,6 +66,32 @@ const App: React.FC = () => {
     }
   };
 
+  // 【重要】バックエンド経由でAI診断を取得する関数
+  const getDiagnosisFromBackend = async (animalName: string, groupData: any) => {
+    // AIへの命令文（プロンプト）を作成
+    const prompt = `${animalName}（${groupData}）について、ビジネス・マネジメントの視点から以下の形式のJSONで詳細な診断レポートを生成してください。
+    回答は必ず以下のJSON構造のみとし、余計な解説は含めないでください：
+    {
+      "basicPersonality": "...",
+      "managementStyle": "...",
+      "decisionMaking": "...",
+      "growthStrategy": "...",
+      "compatibility": "..."
+    }`;
+
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) throw new Error('Backend response was not ok');
+    
+    const data = await response.json();
+    // サーバーから返ってきたテキストをJSONとしてパース（解析）する
+    return JSON.parse(data.text);
+  };
+
   const runDiagnosis = useCallback(async (dateStr: string) => {
     if (!dateStr) {
       setError('生年月日を入力してください');
@@ -85,8 +102,6 @@ const App: React.FC = () => {
       setError('8桁の半角数字で入力してください（例：19850815）');
       return;
     }
-
-    // 連打防止: 既にローディング中なら何もしない
     
     const year = parseInt(dateStr.substring(0, 4), 10);
     const month = parseInt(dateStr.substring(4, 6), 10);
@@ -103,16 +118,16 @@ const App: React.FC = () => {
     if (calcResult) {
       setError('');
       setLoading(true);
-      setResult(null); // 結果をクリア
+      setResult(null); 
       
       try {
-        const content = await fetchDiagnosisFromGemini(calcResult.animalName, calcResult.groupData);
+        // 直接Geminiを叩くのではなく、自前のバックエンドを叩くように変更
+        const content = await getDiagnosisFromBackend(calcResult.animalName, calcResult.groupData);
         
         if (!content || !content.basicPersonality) {
             throw new Error("Invalid response format");
         }
 
-        // URL更新を試みる（エラーになっても診断結果は表示する）
         try {
           const newUrl = new URL(window.location.href);
           newUrl.searchParams.set('d', dateStr);
@@ -121,7 +136,6 @@ const App: React.FC = () => {
           console.warn("URL update failed:", urlError);
         }
 
-        // データのセットは最後に行う
         setResult({
           number: calcResult.number,
           animalName: calcResult.animalName,
@@ -129,7 +143,6 @@ const App: React.FC = () => {
           content: content
         });
 
-        // 完了処理
         setTimeout(() => {
           setLoading(false);
           setTimeout(() => {
@@ -139,13 +152,8 @@ const App: React.FC = () => {
 
       } catch (e: any) {
         console.error("Diagnosis Error:", e);
-        if (e.message === 'DAILY_LIMIT_REACHED') {
-          setError('本日の診断回数上限（50回）に達しました。明日またお試しください。');
-        } else {
-          setError('診断レポートの作成に失敗しました。時間をおいて再度お試しください。');
-        }
+        setError('診断レポートの作成に失敗しました。時間をおいて再度お試しください。');
         setLoading(false);
-        // エラー時は結果を空にする
         setResult(null); 
       }
     } else {
@@ -155,7 +163,7 @@ const App: React.FC = () => {
   }, []);
 
   const handleDiagnoseClick = () => {
-    if (loading) return; // 連打防止
+    if (loading) return; 
     runDiagnosis(birthDate);
   };
 
@@ -189,7 +197,6 @@ const App: React.FC = () => {
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-slate-50 border-b border-slate-200">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-50 to-transparent opacity-60 pointer-events-none"></div>
           
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24 lg:py-28 relative z-10">
             <div className="flex flex-col xl:flex-row items-center gap-12 xl:gap-20">
@@ -254,21 +261,14 @@ const App: React.FC = () => {
                   <div className="flex items-center gap-4 mb-6">
                     <div className="relative shrink-0">
                       <div className="absolute inset-0 bg-blue-500 rounded-full blur opacity-20 animate-pulse"></div>
-                      {/* 
-                         HERO SECTION IMAGE
-                         Updated to use the "thumbnail" endpoint for better reliability.
-                         Added a timestamp query param for cache busting.
-                      */}
                       <img 
                         src="https://drive.google.com/thumbnail?id=1vq9POr6PHLYr7Z0pYFIF5PwrCvpuzUfp&sz=w400&v=3" 
                         className="w-20 h-20 rounded-full object-cover object-top border-4 border-white shadow-lg relative z-10"
                         alt="Profile"
                         onError={(e) => {
-                          // Fallback to a placeholder if the drive link fails
                           e.currentTarget.src = "https://placehold.co/100x100?text=K";
                         }}
                       />
-                     
                     </div>
                     <div>
                       <div className="font-bold text-slate-800 text-xl leading-tight mb-1">カジコン</div>
@@ -342,7 +342,6 @@ const App: React.FC = () => {
             </section>
           )}
         </div>
-
       </main>
     </div>
   );
