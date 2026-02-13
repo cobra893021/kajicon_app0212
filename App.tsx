@@ -235,9 +235,7 @@ const App: React.FC = () => {
                   </div>
                 )}
                 
-                <p className="text-xs text-slate-400 mt-4 font-medium">
-                  ※ 入力情報は分析のみに使用され、保存されません
-                </p>
+             
               </div>
 
               <div className="w-full max-w-lg xl:max-w-xl shrink-0 relative mt-8 xl:mt-0">
