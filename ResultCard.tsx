@@ -19,7 +19,7 @@ interface ResultCardProps {
   animalName: string;
   groupCode: string;
   content: DiagnosisContent;
-  gender: 'male' | 'female'; // App.tsxから選択された性別を受け取る
+  gender: 'male' | 'female';
   onRetry: () => void;
 }
 
@@ -36,7 +36,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
       
-      {/* 1. Header Card: Identity & Strategy */}
+      {/* 1. Header Card */}
       <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl shadow-slate-200/60 border border-slate-100 relative overflow-hidden text-center md:text-left">
         <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -mr-20 -mt-20 z-0"></div>
         <div className="relative z-10">
@@ -84,35 +84,35 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </div>
       </div>
 
-      {/* 3. Gender Specific Analysis: 選択された性別のみを表示 */}
-      <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200">
-        <h4 className="font-bold text-slate-800 mb-6 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-[#336d99]">
-            <Users className="w-4 h-4" />
+      {/* 3. 対人傾向と本質的資質 (ここを修正：横幅いっぱいの1カラムに) */}
+      <div className="bg-slate-50 rounded-[2.5rem] p-8 md:p-12 border border-slate-200">
+        <h4 className="font-bold text-slate-800 mb-8 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-[#336d99]">
+            <Users className="w-5 h-5" />
           </div>
-          <span>対人傾向と本質的資質</span>
+          <span className="text-2xl tracking-tight">対人傾向と本質的資質</span>
         </h4>
         
-        <div className="grid md:grid-cols-1 gap-6">
+        <div className="w-full">
           {gender === 'female' ? (
-            /* 女性の場合：女性的側面のみ表示 */
-            <div className="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-l-rose-400">
-              <h5 className="font-bold text-rose-500 mb-4 text-lg flex items-center gap-2">
-                <Heart className="w-5 h-5" /> 
+            /* 女性の場合：女性的側面のみを大きく表示 */
+            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border-l-4 border-l-rose-400">
+              <h5 className="font-bold text-rose-500 mb-4 text-xl flex items-center gap-3">
+                <Heart className="w-6 h-6" /> 
                 <span>女性的側面から見た資質</span>
               </h5>
-              <p className="text-slate-600 leading-relaxed font-medium italic">
+              <p className="text-slate-600 leading-loose text-lg font-medium">
                 {content.femaleTraits}
               </p>
             </div>
           ) : (
-            /* 男性の場合：男性的側面のみ表示 */
-            <div className="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-l-blue-400">
-              <h5 className="font-bold text-blue-500 mb-4 text-lg flex items-center gap-2">
-                <Zap className="w-5 h-5" /> 
+            /* 男性の場合：男性的側面のみを大きく表示 */
+            <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border-l-4 border-l-blue-400">
+              <h5 className="font-bold text-blue-500 mb-4 text-xl flex items-center gap-3">
+                <Zap className="w-6 h-6" /> 
                 <span>男性的側面から見た資質</span>
               </h5>
-              <p className="text-slate-600 leading-relaxed font-medium italic">
+              <p className="text-slate-600 leading-loose text-lg font-medium">
                 {content.maleTraits}
               </p>
             </div>
@@ -136,55 +136,44 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </p>
       </div>
 
-      {/* 5. Deep Psychology: カラーライン入りの詳細分析 */}
+      {/* 5. Deep Psychology (Psychegram) */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-rose-500">
           <h4 className="font-bold text-rose-500 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
             <Heart className="w-4 h-4" /> 深層心理
           </h4>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            {content.psychegram.features}
-          </p>
+          <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram.features}</p>
         </div>
 
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
           <h4 className="font-bold text-indigo-500 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
             <Users className="w-4 h-4" /> 対人対応
           </h4>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            {content.psychegram.interpersonal}
-          </p>
+          <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram.interpersonal}</p>
         </div>
 
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-orange-500">
           <h4 className="font-bold text-orange-500 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
             <Zap className="w-5 h-5" /> 行動特性
           </h4>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            {content.psychegram.action}
-          </p>
+          <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram.action}</p>
         </div>
 
         <div className="md:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-teal-500">
           <h4 className="font-bold text-teal-500 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
             <MessageSquare className="w-4 h-4" /> コミュニケーション
           </h4>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            {content.psychegram.expression}
-          </p>
+          <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram.expression}</p>
         </div>
 
         <div className="md:col-span-1 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-yellow-400">
           <h4 className="font-bold text-yellow-600 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
             <Award className="w-4 h-4" /> 才能・センス
           </h4>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            {content.psychegram.talent}
-          </p>
+          <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram.talent}</p>
         </div>
       </div>
 
-      {/* Footer / Action */}
       <div className="text-center pt-8 pb-12">
         <button 
           onClick={onRetry} 
@@ -193,9 +182,6 @@ const ResultCard: React.FC<ResultCardProps> = ({
           <span>別の生年月日で分析する</span>
           <ChevronRight className="w-5 h-5" />
         </button>
-        <p className="text-slate-400 text-xs mt-8 font-medium">
-          Powered by Kajicon Assessment Logic
-        </p>
       </div>
     </div>
   );
