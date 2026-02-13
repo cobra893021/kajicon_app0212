@@ -68,25 +68,30 @@ const App: React.FC = () => {
   // 【バックエンド呼び出し関数】
   const getDiagnosisFromBackend = async (animalName: string, groupData: any) => {
     const dataString = JSON.stringify(groupData, null, 2);
-    const prompt = `あなたは優秀な経営コンサルタント兼プロファイラーです。
-    以下の【生データ】を基に、「${animalName}」の特性を持つ人物のプロファイリングレポートを日本語で作成してください。
-    
-    【生データ】
+
+    const prompt = `あなたは中小企業診断士の資格を持つ優秀な経営コンサルタントです。
+    以下の【診断用生データ】をすべて読み込み、プロフェッショナルな日本語のプロファイリングレポート（各項目150文字程度）を作成してください。
+
+    【診断用生データ】
     ${dataString}
 
-    必ず以下のJSON構造のみを出力してください。
+    【レポート作成の重要指示】
+    1. 各項目は、生データの指定された値をビジネス・マネジメントの観点から「要約・リライト」して作成してください。
+    2. 絶対に「データなし」「不明」という回答はしないでください。
+    3. JSONのキー名は、以下の通りに厳守してください。
+
     {
-      "basicPersonality": "基本的な性格と本質的な強み（生データのbasicPersonalityを基に）",
-      "lifeTrend": "人生のバイオリズムや運気の傾向（生データのlifeTrendを基に）",
-      "femaleTraits": "女性的な側面（生データのfemaleTraitsを基に）",
-      "maleTraits": "男性的側面（生データのmaleTraitsを基に）",
-      "work": "ビジネス適性とキャリア戦略（生データのworkを基に）",
+      "basicPersonality": "【生データの basicPersonality】を基にした、本質の強みと性格分析",
+      "lifeTrend": "【生データの lifeTrend】を基にした、人生のバイオリズムと長期戦略アドバイス",
+      "femaleTraits": "【生データの femaleTraits】を基にした、対人関係における受容力や感性の特徴",
+      "maleTraits": "【生データの maleTraits】を基にした、決断力やリーダーシップの傾向",
+      "work": "【生データの work】を基にした、具体的なビジネス適性とキャリアプラン",
       "psychegram": {
-        "features": "深層心理の特徴（サイグラムのfeaturesを基に）",
-        "interpersonal": "対人対応の特徴（サイグラムのinterpersonalを基に）",
-        "action": "行動特性（サイグラムのactionexpressionを基に）",
-        "expression": "コミュニケーション・表現（サイグラムのactionexpressionから分析）",
-        "talent": "才能・センス（サイグラムのtalentを基に）"
+        "features": "【生データの psychegram.features】を基にした、深層心理の特徴",
+        "interpersonal": "【生データの psychegram.interpersonal】を基にした、対人対応・マネジメントの型",
+        "action": "【生データの psychegram.action】を基にした、行動特性と実行力の分析",
+        "expression": "【生データの psychegram.expression】を基にした、コミュニケーションのスタイル",
+        "talent": "【生データの psychegram.talent】を基にした、本人が気づいていない才能・センス"
       }
     }`;
 
@@ -100,7 +105,6 @@ const App: React.FC = () => {
     const data = await response.json();
     return JSON.parse(data.text);
   };
-
   // 【メインの診断実行関数】async を付与
   const runDiagnosis = useCallback(async (dateStr: string) => {
     if (!dateStr || !/^\d{8}$/.test(dateStr)) {
