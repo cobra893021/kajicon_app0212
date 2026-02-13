@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { calculateDiagnosis } from './services/calculator';
 import ResultCard from './components/ResultCard';
 import { DiagnosisContent } from './types';
-import { TrendingUp, ShieldCheck, Users, Search, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { TrendingUp, ShieldCheck, Users, Search, ChevronRight, AlertCircle } from 'lucide-react';
 
 // --- Components ---
 const LoadingOverlay: React.FC = () => {
@@ -45,12 +45,16 @@ const FeatureItem: React.FC<{ icon: React.ReactNode, title: string, desc: string
 const App: React.FC = () => {
   const [birthDate, setBirthDate] = useState<string>('');
   const [gender, setGender] = useState<'male' | 'female'>('female'); 
+  
+  // 診断結果と、その時の性別をセットで保存する
   const [result, setResult] = useState<{
     number: number;
     animalName: string;
     groupCode: string;
     content: DiagnosisContent;
+    gender: 'male' | 'female'; 
   } | null>(null);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const resultRef = useRef<HTMLDivElement>(null);
@@ -69,7 +73,8 @@ const App: React.FC = () => {
   const getDiagnosisFromBackend = async (animalName: string, groupData: any, selectedGender: 'male' | 'female') => {
     const dataString = JSON.stringify(groupData, null, 2);
     const genderLabel = selectedGender === 'male' ? '男性' : '女性';
-    const genderSpecificKey = selectedGender === 'male' ? 'maleTraits' : 'femaleTraits';
+    const targetGenderKey = selectedGender === 'male' ? 'maleTraits' : 'femaleTraits';
+    const oppositeGenderKey = selectedGender === 'male' ? 'femaleTraits' : 'maleTraits';
 
     const prompt = `あなたは「動物占い」のキャラクター性と「サイグラム」の構造的分析を融合させる、中小企業診断士の資格を持つ経営コンサルタントです。
     対象者は【${genderLabel}】です。以下の【診断用生データ】を読み込み、プロフェッショナルなプロファイリングレポートを作成してください。
@@ -78,25 +83,24 @@ const App: React.FC = () => {
     ${dataString}
 
     【レポート作成の絶対ルール】
-    1. 出力テキスト内に「動物の名前（例：猿、チーター等）」や「グループコード（例：A8、F1等）」を一切含めないでください。
-    2. 診断の舞台裏を感じさせず、一人の人物に対する「純粋な行動心理分析」としてリライトしてください。
-    3. 対象者が【${genderLabel}】であることを踏まえ、生データの【${genderSpecificKey}】を重点的に分析に反映させてください。
-    4. 各項目は、生データの値をビジネス・マネジメントの観点から要約・補完してください。
-    5. 比率として「動物占いデータ：サイグラムデータ」を「6：4」で構成してください。
-    6. JSONのキー名は以下を厳守し、指定された文字数で記述してください。
+    1. 出力テキスト内に「動物の名前」や「グループコード」を一切含めないでください。
+    2. 対象者が【${genderLabel}】であることを踏まえ、生データの【${targetGenderKey}】を重点的に分析に反映させてください。
+    3. 重要：今回は【${genderLabel}】の診断であるため、JSON内の【${oppositeGenderKey}】は必ず「空文字 ("")」にしてください。
+    4. 各項目は、ビジネス・マネジメントの観点から要約・補完してください。
+    5. JSONのキー名は以下を厳守してください。
 
     {
-      "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（250文字程度）",
-      "lifeTrend": "【生データの lifeTrend】を基にした人生のバイオリズムと戦略アドバイス（200文字程度）",
-      "femaleTraits": "対象者が【${genderLabel}】であることを踏まえ、対人関係における受容力や感性の特徴を分析（150文字程度）",
-      "maleTraits": "対象者が【${genderLabel}】であることを踏まえ、決断力やリーダーシップの傾向を分析（150文字程度）",
-      "work": "【生データの work】を基にした具体的なビジネス適性とキャリアプラン（250文字程度）",
+      "basicPersonality": "分析（250文字程度）",
+      "lifeTrend": "アドバイス（200文字程度）",
+      "femaleTraits": "${selectedGender === 'female' ? '分析（150文字程度）' : ''}",
+      "maleTraits": "${selectedGender === 'male' ? '分析（150文字程度）' : ''}",
+      "work": "プラン（250文字程度）",
       "psychegram": {
-        "features": "【生データの psychegram.features】を基にした深層心理の特徴（150文字程度）",
-        "interpersonal": "【生データの psychegram.interpersonal】を基にした対人マネジメントの型（150文字程度）",
-        "action": "【生データの psychegram.action】を基にした行動特性と実行力の分析（150文字程度）",
-        "expression": "【生データの psychegram.expression】を基にしたコミュニケーションスタイル（150文字程度）",
-        "talent": "【生データの psychegram.talent】を基にした本人が気づいていない才能・センス（150文字程度）"
+        "features": "特徴",
+        "interpersonal": "対人",
+        "action": "行動",
+        "expression": "表現",
+        "talent": "才能"
       }
     }`;
 
@@ -137,7 +141,8 @@ const App: React.FC = () => {
           number: calcResult.number,
           animalName: calcResult.animalName,
           groupCode: calcResult.groupCode,
-          content: content
+          content: content,
+          gender: currentGender 
         });
 
         setTimeout(() => {
@@ -149,11 +154,11 @@ const App: React.FC = () => {
 
       } catch (e: any) {
         console.error("Diagnosis Error:", e);
-        setError('診断レポートの作成に失敗しました。時間をおいて再度お試しください。');
+        setError('診断レポートの作成に失敗しました。');
         setLoading(false);
       }
     } else {
-      setError('診断可能な期間（1960-2025）か確認してください。');
+      setError('診断可能な期間か確認してください。');
       setLoading(false);
     }
   }, []);
@@ -196,68 +201,68 @@ const App: React.FC = () => {
                   <span className="w-2 h-2 rounded-full bg-[#336d99] animate-pulse"></span>
                   Professional Edition v2.0
                 </div>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6 text-balance">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6">
                   <span className={`${accentColor}`}>Kajicon Profiler</span>
                 </h1>
                 
                 <p className="text-base sm:text-lg text-slate-500 leading-relaxed mb-10 max-w-2xl mx-auto xl:mx-0 font-medium">
-                  独自の統計データとAIを融合し、あなたの隠れた才能、<br className="hidden sm:block" />
-                  行動特性を導き出します。
+                  独自の統計データとAIを融合し、あなたの隠れた才能、行動特性を導き出します。
                 </p>
                 
-                {/* 【入力エリア】
-                  w-full と max-w-3xl で全体の幅を確保。
-                  sm:flex-row で横一列に配置し、両端を揃える。
-                */}
-                <div className="bg-white p-2 sm:p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 w-full max-w-3xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
+                {/* 2段構成の入力フォーム */}
+                <div className="flex flex-col gap-3 w-full max-w-2xl mx-auto xl:mx-0">
                   
-                  {/* 生年月日：flex-[2] で多めに幅を取る */}
-                  <div className="flex-[2] relative min-w-[180px]">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Search className="h-5 w-5 text-slate-400" />
-                    </div>
-                    <input 
-                      type="text" 
-                      placeholder="生年月日 (例: 19850815)" 
-                      maxLength={8}
-                      value={birthDate}
-                      onChange={handleInputChange}
-                      onKeyDown={(e) => {
-                         if (e.key === 'Enter' && !loading) handleDiagnoseClick();
-                      }}
-                      className="w-full h-full pl-11 pr-4 py-3 sm:py-4 bg-slate-50 hover:bg-white focus:bg-white rounded-xl outline-none text-slate-800 font-bold text-lg tracking-widest placeholder:font-normal placeholder:tracking-normal border border-transparent focus:border-blue-200 focus:ring-4 focus:ring-blue-50 transition-all"
-                    />
-                  </div>
-                  
-                  {/* 性別選択：flex-1。relative と appearance-none でカスタム矢印を表示 */}
-                  <div className="flex-1 relative flex items-center min-w-[100px] sm:min-w-[120px]">
-                    <select 
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value as 'male' | 'female')}
-                      className="w-full bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 pl-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center h-full text-lg"
-                    >
-                      <option value="female">女性</option>
-                      <option value="male">男性</option>
-                    </select>
-                    {/* カスタム▼マーク */}
-                    <div className="absolute right-4 pointer-events-none flex items-center">
-                      <span className="text-[#336d99] text-[10px] transform scale-x-125">▼</span>
+                  {/* 1段目：生年月日入力欄 */}
+                  <div className="bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 transition-transform hover:scale-[1.01]">
+                    <div className="relative w-full">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Search className="h-5 w-5 text-slate-400" />
+                      </div>
+                      <input 
+                        type="text" 
+                        placeholder="生年月日 (例: 19850815)" 
+                        maxLength={8}
+                        value={birthDate}
+                        onChange={handleInputChange}
+                        onKeyDown={(e) => {
+                           if (e.key === 'Enter' && !loading) handleDiagnoseClick();
+                        }}
+                        className="w-full pl-11 pr-4 py-4 bg-slate-50 hover:bg-white focus:bg-white rounded-xl outline-none text-slate-800 font-bold text-lg tracking-widest placeholder:font-normal placeholder:tracking-normal border border-transparent focus:border-blue-200 focus:ring-4 focus:ring-blue-50 transition-all"
+                      />
                     </div>
                   </div>
 
-                  {/* 診断ボタン：flex-[1.2] で調整 */}
-                  <button 
-                    onClick={handleDiagnoseClick}
-                    disabled={loading}
-                    className={`flex-[1.2] ${bgAccentColor} hover:bg-[#254e6e] text-white px-6 py-3 sm:py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap text-lg disabled:opacity-70 disabled:cursor-not-allowed`}
-                  >
-                    無料診断
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
+                  {/* 2段目：性別選択 と 無料診断ボタン */}
+                  <div className="flex gap-3 w-full">
+                    <div className="flex-1 relative bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 transition-transform hover:scale-[1.01]">
+                      <div className="relative h-full flex items-center">
+                        <select 
+                          value={gender}
+                          onChange={(e) => setGender(e.target.value as 'male' | 'female')}
+                          className="w-full bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-4 pl-4 pr-10 rounded-xl outline-none appearance-none text-center h-full text-lg cursor-pointer transition-all focus:ring-2 focus:ring-blue-100"
+                        >
+                          <option value="female">女性</option>
+                          <option value="male">男性</option>
+                        </select>
+                        <div className="absolute right-4 pointer-events-none">
+                          <span className="text-[#336d99] text-[10px] transform scale-x-125 inline-block">▼</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={handleDiagnoseClick}
+                      disabled={loading}
+                      className={`flex-1 ${bgAccentColor} hover:bg-[#254e6e] text-white px-6 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap text-lg disabled:opacity-70 disabled:cursor-not-allowed`}
+                    >
+                      無料診断
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
 
                 {error && (
-                  <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm font-bold inline-flex items-center animate-pulse">
+                  <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm font-bold inline-flex items-center">
                     <AlertCircle className="w-4 h-4 mr-2" />
                     {error}
                   </div>
@@ -268,35 +273,19 @@ const App: React.FC = () => {
                 </p>
               </div>
 
+              {/* カジコン紹介 */}
               <div className="w-full max-w-lg xl:max-w-xl shrink-0 relative mt-8 xl:mt-0">
                 <div className="bg-white/70 backdrop-blur-xl border border-white/60 p-6 md:p-8 rounded-[2rem] shadow-2xl shadow-slate-200/50">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="relative shrink-0">
-                      <img 
-                        src="https://drive.google.com/thumbnail?id=1vq9POr6PHLYr7Z0pYFIF5PwrCvpuzUfp&sz=w400&v=3" 
-                        className="w-20 h-20 rounded-full object-cover object-top border-4 border-white shadow-lg"
-                        alt="Profile"
-                      />
-                    </div>
+                    <img src="https://drive.google.com/thumbnail?id=1vq9POr6PHLYr7Z0pYFIF5PwrCvpuzUfp&sz=w400&v=3" className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg" alt="Profile" />
                     <div>
                       <div className="font-bold text-slate-800 text-xl leading-tight mb-1">カジコン</div>
                       <div className="text-sm font-bold text-[#336d99] bg-blue-50 px-3 py-1 rounded-full inline-block border border-blue-100">中小企業診断士 / 監修</div>
                     </div>
                   </div>
-                  <div className="text-sm text-slate-600 leading-relaxed text-left bg-white/50 p-5 rounded-2xl border border-white font-medium">
-                    <p className="mb-4">中小企業診断士のカジコンです。<br/>
-                        500社以上の現場をV字回復させてきた中で組織を動かす鍵は、<br/>
-                        『一人ひとりの個性に合わせた具体策』にあると確信しました。
-                      </p>
-                      <p className="mb-4">
-                        この現場経験とMBAの知見、<br/>
-                        さらに膨大な統計を融合させ開発したのが<span className="text-[#336d99] font-bold">kajiconProfiler</span>です。
-                      </p>
-                      <p>
-                        今までの感覚に頼るマネジメントを卒業し、<br/>
-                        あなたと部下の『本質』という取扱説明書を手に入れ、<br/>
-                        組織運営に役立ててください。</p>
-                  </div>
+                  <p className="text-sm text-slate-600 leading-relaxed font-medium">
+                    500社以上の現場を改善。組織運営に役立つあなたの『本質』を分析します。
+                  </p>
                 </div>
               </div>
             </div>
@@ -304,16 +293,10 @@ const App: React.FC = () => {
         </section>
 
         <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 md:px-8">
-            <div className="text-center mb-16 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">なぜ「本質」を知る必要があるのか</h2>
-              <p className="text-slate-500 leading-8">表面的なスキルではなく、根本的な行動原理を理解することが成功への近道です。<br className="hidden md:block"/>自分自身の取扱説明書を手に入れましょう。</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <FeatureItem icon={<TrendingUp className="w-6 h-6" />} title="キャリア戦略" desc="自分の勝ちパターンを知ることで、無駄な努力を省き、最短距離で成果を出すためのキャリアパスを設計できます。" />
-              <FeatureItem icon={<Users className="w-6 h-6" />} title="組織マネジメント" desc="自分と他者の違いを論理的に理解することで、コミュニケーションコストを下げ、チームの生産性を最大化します。" />
-              <FeatureItem icon={<ShieldCheck className="w-6 h-6" />} title="意思決定基準" desc="迷った時に立ち返るべき「自分軸」を明確にし、後悔のない意思決定を行うための指針を提供します。" />
-            </div>
+          <div className="max-w-7xl mx-auto px-4 md:px-8 grid md:grid-cols-3 gap-8 text-center">
+            <FeatureItem icon={<TrendingUp className="w-6 h-6" />} title="キャリア戦略" desc="自分の勝ちパターンを知り成果を出す。" />
+            <FeatureItem icon={<Users className="w-6 h-6" />} title="組織マネジメント" desc="他者との違いを理解し生産性を最大化。" />
+            <FeatureItem icon={<ShieldCheck className="w-6 h-6" />} title="意思決定基準" desc="迷った時に立ち返るべき「自分軸」を。" />
           </div>
         </section>
 
@@ -326,7 +309,7 @@ const App: React.FC = () => {
                   animalName={result.animalName} 
                   groupCode={result.groupCode}
                   content={result.content}
-                  gender={gender}
+                  gender={result.gender} 
                   onRetry={handleReset}
                 />
               </div>
