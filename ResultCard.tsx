@@ -84,7 +84,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </div>
       </div>
 
-      {/* 3. 対人傾向と本質的資質 (ここを修正：横幅いっぱいの1カラムに) */}
+      {/* 3. 対人傾向と本質的資質 (横幅いっぱいの1カラムに固定) */}
       <div className="bg-slate-50 rounded-[2.5rem] p-8 md:p-12 border border-slate-200">
         <h4 className="font-bold text-slate-800 mb-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-[#336d99]">
@@ -93,9 +93,9 @@ const ResultCard: React.FC<ResultCardProps> = ({
           <span className="text-2xl tracking-tight">対人傾向と本質的資質</span>
         </h4>
         
+        {/* genderプロパティに基づいて表示するコンポーネントを切り替え、不要な方は生成しない */}
         <div className="w-full">
           {gender === 'female' ? (
-            /* 女性の場合：女性的側面のみを大きく表示 */
             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border-l-4 border-l-rose-400">
               <h5 className="font-bold text-rose-500 mb-4 text-xl flex items-center gap-3">
                 <Heart className="w-6 h-6" /> 
@@ -106,7 +106,6 @@ const ResultCard: React.FC<ResultCardProps> = ({
               </p>
             </div>
           ) : (
-            /* 男性の場合：男性的側面のみを大きく表示 */
             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border-l-4 border-l-blue-400">
               <h5 className="font-bold text-blue-500 mb-4 text-xl flex items-center gap-3">
                 <Zap className="w-6 h-6" /> 
