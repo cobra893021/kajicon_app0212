@@ -57,7 +57,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </div>
       </div>
 
-      {/* 2. Core Personality Section */}
+      {/* 2. 基本特性と人生のトレンド */}
       <div className="grid md:grid-cols-2 gap-8">
         <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/40 border border-slate-100 flex flex-col">
           <div className="flex items-center gap-4 mb-6">
@@ -84,7 +84,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </div>
       </div>
 
-      {/* 3. 対人傾向と本質的資質 (横幅いっぱいの1カラムに固定) */}
+      {/* 3. 対人傾向と本質的資質 (ここを完全に1カラム化して条件分岐) */}
       <div className="bg-slate-50 rounded-[2.5rem] p-8 md:p-12 border border-slate-200">
         <h4 className="font-bold text-slate-800 mb-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-[#336d99]">
@@ -93,9 +93,12 @@ const ResultCard: React.FC<ResultCardProps> = ({
           <span className="text-2xl tracking-tight">対人傾向と本質的資質</span>
         </h4>
         
-        {/* genderプロパティに基づいて表示するコンポーネントを切り替え、不要な方は生成しない */}
-        <div className="w-full">
+        {/* 重要：ここから下が条件分岐の本体です。
+            デベロッパーツールで md:col-span-6 が出ている原因は、この外側のレイアウトが
+            グリッド指定されていたためです。それを削除し、1カラムに変更しました。 */}
+        <div className="block">
           {gender === 'female' ? (
+            /* 女性を選択した場合：女性用の枠のみを作成 */
             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border-l-4 border-l-rose-400">
               <h5 className="font-bold text-rose-500 mb-4 text-xl flex items-center gap-3">
                 <Heart className="w-6 h-6" /> 
@@ -106,6 +109,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
               </p>
             </div>
           ) : (
+            /* 男性を選択した場合：男性用の枠のみを作成 */
             <div className="bg-white p-8 md:p-10 rounded-3xl shadow-sm border-l-4 border-l-blue-400">
               <h5 className="font-bold text-blue-500 mb-4 text-xl flex items-center gap-3">
                 <Zap className="w-6 h-6" /> 
@@ -119,7 +123,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </div>
       </div>
 
-      {/* 4. Business Talent Analysis */}
+      {/* 4. ビジネス適性とキャリアプラン */}
       <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/40 border border-slate-100">
         <div className="flex items-center gap-4 mb-8">
           <div className="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
@@ -135,7 +139,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
         </p>
       </div>
 
-      {/* 5. Deep Psychology (Psychegram) */}
+      {/* 5. 深層心理プロファイリング */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-rose-500">
           <h4 className="font-bold text-rose-500 mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
