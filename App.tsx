@@ -236,13 +236,13 @@ const App: React.FC = () => {
                     style={{ minWidth: '100px' }}
                   >
                    <option value="female">女性</option>
-    <option value="male">男性</option>
-  </select>
-  {/* ▼マークを絶対配置で重ねる */}
-  <div className="absolute right-3 pointer-events-none text-[#336d99] text-[10px]">
-    ▼
-  </div>
-</div>
+   　　　　　　　　　 <option value="male">男性</option>
+  　　　　　　　　　　</select>
+ 　　　　　　　　　　 {/* ▼マークを絶対配置で重ねる */}
+ 　　　　　　　　　　 <div className="absolute right-3 pointer-events-none text-[#336d99] text-[10px]">
+ 　　　　　　　　　   ▼
+　　　　　　　　　　  </div>
+　　　　　　　　　　　</div>
 
                   <button 
                     onClick={handleDiagnoseClick}
