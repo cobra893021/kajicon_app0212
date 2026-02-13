@@ -87,11 +87,11 @@ const App: React.FC = () => {
       "maleTraits": "【生データの maleTraits】を基にした、決断力やリーダーシップの傾向を【100文字程度】で記述",
       "work": "【生データの work】を基にした、具体的なビジネス適性とキャリアプランを【250文字程度】で詳しく提案",
       "psychegram": {
-        "features": "【生データの psychegram.features】を基にした、深層心理の特徴",
-        "interpersonal": "【生データの psychegram.interpersonal】を基にした、対人対応・マネジメントの型",
-        "action": "【生データの psychegram.action】を基にした、行動特性と実行力の分析",
-        "expression": "【生データの psychegram.expression】を基にした、コミュニケーションのスタイル",
-        "talent": "【生データの psychegram.talent】を基にした、本人が気づいていない才能・センス"
+        "features": "【生データの psychegram.features】を基にした、深層心理の特徴を【100文字程度】で記述",
+        "interpersonal": "【生データの psychegram.interpersonal】を基にした、対人対応・マネジメントの型を【100文字程度】で記述",
+        "action": "【生データの psychegram.action】を基にした、行動特性と実行力の分析を【100文字程度】で記述",
+        "expression": "【生データの psychegram.expression】を基にした、コミュニケーションのスタイルを【100文字程度】で記述",
+        "talent": "【生データの psychegram.talent】を基にした、本人が気づいていない才能・センスを【100文字程度】で記述"
       }
     }`;
 
