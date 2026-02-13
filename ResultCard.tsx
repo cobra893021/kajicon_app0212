@@ -161,7 +161,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ animalNumber, animalName, group
         </div>
 
         <div className="md:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
-          <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-yellow-600">
+          <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-yellow-500">
             <Lightbulb className="w-4 h-4" /> 才能・センス
           </h4>
           <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram?.talent || "-"}</p>
