@@ -1,28 +1,31 @@
-// api/chat.js
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// api/chat.js (CommonJS形式に修正)
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-export default async function handler(req, res) {
-  // セキュリティ対策：POSTメソッド以外は受け付けない
+module.exports = async (req, res) => {
+  // POSTメソッド以外はエラーを返す
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // Vercelの管理画面で設定する環境変数からAPIキーを読み込む（ブラウザからは見えません）
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  
-  // 最新の gemini-2.0-flash を使用
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   try {
-    const { prompt } = req.body; // フロントエンドから送られてきたテキスト
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    // APIキーがない場合のエラーハンドリング
+    if (!apiKey) {
+      return res.status(500).json({ error: 'APIキーが設定されていません' });
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const { prompt } = req.body;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
-    // 結果をフロントエンドに返す
     res.status(200).json({ text });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'AIの呼び出しに失敗しました' });
+    console.error("Server Error:", error);
+    res.status(500).json({ error: error.message || 'AIの呼び出しに失敗しました' });
   }
-}
+};
