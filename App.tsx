@@ -239,7 +239,18 @@ const App: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-sm text-slate-600 leading-relaxed text-left bg-white/50 p-5 rounded-2xl border border-white font-medium">
-                    <p className="mb-4">中小企業診断士のカジコンです。MBAの知見と現場経験、さらに膨大な統計を融合させ開発したのがkajiconProfilerです。</p>
+                    <p className="mb-4">中小企業診断士のカジコンです。<br/>
+                        500社以上の現場をV字回復させてきた中で組織を動かす鍵は、<br/>
+                        『一人ひとりの個性に合わせた具体策』にあると確信しました。
+                      </p>
+                      <p className="mb-4">
+                        この現場経験とMBAの知見、<br/>
+                        さらに膨大な統計を融合させ開発したのが<span className="text-[#336d99] font-bold">kajiconProfiler</span>です。
+                      </p>
+                      <p>
+                        今までの感覚に頼るマネジメントを卒業し、<br/>
+                        あなたと部下の『本質』という取扱説明書を手に入れ、<br/>
+                        組織運営に役立ててください。</p>
                   </div>
                 </div>
               </div>
@@ -249,10 +260,14 @@ const App: React.FC = () => {
 
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 md:px-8">
+            <div className="text-center mb-16 max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">なぜ「本質」を知る必要があるのか</h2>
+              <p className="text-slate-500 leading-8">表面的なスキルではなく、根本的な行動原理を理解することが成功への近道です。<br className="hidden md:block"/>自分自身の取扱説明書を手に入れましょう。</p>
+            </div>
             <div className="grid md:grid-cols-3 gap-8">
-              <FeatureItem icon={<TrendingUp className="w-6 h-6" />} title="キャリア戦略" desc="自分の勝ちパターンを知るためのパスを設計できます。" />
-              <FeatureItem icon={<Users className="w-6 h-6" />} title="組織マネジメント" desc="自分と他者の違いを理解し、チームの生産性を最大化します。" />
-              <FeatureItem icon={<ShieldCheck className="w-6 h-6" />} title="意思決定基準" desc="迷った時に立ち返るべき自分軸を明確にします。" />
+              <FeatureItem icon={<TrendingUp className="w-6 h-6" />} title="キャリア戦略" desc="自分の勝ちパターンを知ることで、無駄な努力を省き、最短距離で成果を出すためのキャリアパスを設計できます。" />
+              <FeatureItem icon={<Users className="w-6 h-6" />} title="組織マネジメント" desc="自分と他者の違いを論理的に理解することで、コミュニケーションコストを下げ、チームの生産性を最大化します。" />
+              <FeatureItem icon={<ShieldCheck className="w-6 h-6" />} title="意思決定基準" desc="迷った時に立ち返るべき「自分軸」を明確にし、後悔のない意思決定を行うための指針を提供します。" />
             </div>
           </div>
         </section>
