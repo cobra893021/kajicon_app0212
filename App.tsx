@@ -209,7 +209,7 @@ const App: React.FC = () => {
                   行動特性を導き出します。
                 </p>
                 
-                {/* 【修正ポイント4】入力エリアに性別プルダウンを追加 */}
+              {/* 【修正ポイント4】入力エリアに性別プルダウンを追加 */}
                 <div className="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
                   <div className="flex-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -227,6 +227,32 @@ const App: React.FC = () => {
                       className="w-full h-full pl-11 pr-4 py-3 sm:py-4 bg-slate-50 hover:bg-white focus:bg-white rounded-xl outline-none text-slate-800 font-bold text-lg tracking-widest placeholder:font-normal placeholder:tracking-normal border border-transparent focus:border-blue-200 focus:ring-4 focus:ring-blue-50 transition-all"
                     />
                   </div>
+                  
+                  {/* 性別選択プルダウン（カスタム矢印付き） */}
+                  <div className="relative flex items-center min-w-[120px]">
+                    <select 
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value as 'male' | 'female')}
+                      className="w-full bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 pl-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center h-full"
+                    >
+                      <option value="female">女性</option>
+                      <option value="male">男性</option>
+                    </select>
+                    {/* ▼マークのアイコン */}
+                    <div className="absolute right-4 pointer-events-none flex items-center">
+                      <span className="text-[#336d99] text-[10px] transform scale-x-125">▼</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={handleDiagnoseClick}
+                    disabled={loading}
+                    className={`${bgAccentColor} hover:bg-[#254e6e] text-white px-8 py-3 sm:py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap text-lg disabled:opacity-70 disabled:cursor-not-allowed`}
+                  >
+                    無料で分析
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
                   
                   {/* 性別選択プルダウン */}
                   <select 
