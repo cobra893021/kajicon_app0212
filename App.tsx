@@ -194,22 +194,33 @@ const App: React.FC = () => {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.2] tracking-tight mb-6 text-balance">
                   <span className={`${accentColor}`}>Kajicon Profiler</span>
                 </h1>
+                
+               <p className="text-base sm:text-lg text-slate-500 leading-relaxed mb-10 max-w-2xl mx-auto xl:mx-0 font-medium">
+                  独自の統計データとAIを融合し、あなたの隠れた才能、<br className="hidden sm:block" />
+                  行動特性を導き出します。
+                </p>
+                
                 <div className="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
                   <div className="flex-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Search className="h-5 w-5 text-slate-400" />
+                    </div>
                     <input 
                       type="text" 
                       placeholder="生年月日 (例: 19850815)" 
                       maxLength={8}
                       value={birthDate}
                       onChange={handleInputChange}
-                      onKeyDown={(e) => { if (e.key === 'Enter' && !loading) handleDiagnoseClick(); }}
-                      className="w-full h-full pl-4 pr-4 py-3 sm:py-4 bg-slate-50 hover:bg-white focus:bg-white rounded-xl outline-none text-slate-800 font-bold text-lg tracking-widest placeholder:font-normal placeholder:tracking-normal"
+                      onKeyDown={(e) => {
+                         if (e.key === 'Enter' && !loading) handleDiagnoseClick();
+                      }}
+                      className="w-full h-full pl-11 pr-4 py-3 sm:py-4 bg-slate-50 hover:bg-white focus:bg-white rounded-xl outline-none text-slate-800 font-bold text-lg tracking-widest placeholder:font-normal placeholder:tracking-normal border border-transparent focus:border-blue-200 focus:ring-4 focus:ring-blue-50 transition-all"
                     />
                   </div>
                   <button 
                     onClick={handleDiagnoseClick}
                     disabled={loading}
-                    className={`${bgAccentColor} hover:bg-[#254e6e] text-white px-8 py-3 sm:py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap text-lg`}
+                    className={`${bgAccentColor} hover:bg-[#254e6e] text-white px-8 py-3 sm:py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap text-lg disabled:opacity-70 disabled:cursor-not-allowed`}
                   >
                     無料で分析
                     <ChevronRight className="w-5 h-5" />
@@ -221,6 +232,10 @@ const App: React.FC = () => {
                     {error}
                   </div>
                 )}
+                
+                <p className="text-xs text-slate-400 mt-4 font-medium">
+                  ※ 入力情報は分析のみに使用され、保存されません
+                </p>
               </div>
 
               <div className="w-full max-w-lg xl:max-w-xl shrink-0 relative mt-8 xl:mt-0">
