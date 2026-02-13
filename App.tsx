@@ -68,15 +68,32 @@ const App: React.FC = () => {
 
   // 【重要】バックエンド経由でAI診断を取得する関数
   const getDiagnosisFromBackend = async (animalName: string, groupData: any) => {
-    // AIへの命令文（プロンプト）を作成
-    const prompt = `${animalName}（${groupData}）について、ビジネス・マネジメントの視点から以下の形式のJSONで詳細な診断レポートを生成してください。
-    回答は必ず以下のJSON構造のみとし、余計な解説は含めないでください：
+    // 生データを文字列化してAIに渡す
+    const dataString = JSON.stringify(groupData, null, 2);
+
+    const prompt = `あなたは優秀な経営コンサルタント兼プロファイラーです。
+    以下の【生データ】を基に、「${animalName}」の特性を持つ人物のプロファイリングレポートを日本語で作成してください。
+    
+    【生データ】
+    ${dataString}
+
+    必ず以下のJSON構造のみを出力してください。
+    ※各項目は生データの内容を基に、プロの視点で分析・要約した日本語（各100〜150文字）で記述してください。
+    ※psychegram内のキー名も一字一句変えないでください。
+
     {
-      "basicPersonality": "...",
-      "managementStyle": "...",
-      "decisionMaking": "...",
-      "growthStrategy": "...",
-      "compatibility": "..."
+      "basicPersonality": "基本的な性格と本質的な強み（生データのbasicPersonalityを基に）",
+      "lifeTrend": "人生のバイオリズムや運気の傾向（生データのlifeTrendを基に）",
+      "femaleTraits": "女性的な側面（生データのfemaleTraitsを基に）",
+      "maleTraits": "男性的側面（生データのmaleTraitsを基に）",
+      "work": "ビジネス適性とキャリア戦略（生データのworkを基に）",
+      "psychegram": {
+        "features": "深層心理の特徴（サイグラムのfeaturesを基に）",
+        "interpersonal": "対人対応の特徴（サイグラムのinterpersonalを基に）",
+        "action": "行動特性（サイグラムのactionexpressionを基に）",
+        "expression": "コミュニケーション・表現（サイグラムのactionexpressionから分析）",
+        "talent": "才能・センス（サイグラムのtalentを基に）"
+      }
     }`;
 
     const response = await fetch('/api/chat', {
@@ -88,15 +105,8 @@ const App: React.FC = () => {
     if (!response.ok) throw new Error('Backend response was not ok');
     
     const data = await response.json();
-    // サーバーから返ってきたテキストをJSONとしてパース（解析）する
     return JSON.parse(data.text);
   };
-
-  const runDiagnosis = useCallback(async (dateStr: string) => {
-    if (!dateStr) {
-      setError('生年月日を入力してください');
-      return;
-    }
 
     if (!/^\d{8}$/.test(dateStr)) {
       setError('8桁の半角数字で入力してください（例：19850815）');
