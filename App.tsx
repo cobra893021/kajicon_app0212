@@ -70,7 +70,7 @@ const App: React.FC = () => {
     const dataString = JSON.stringify(groupData, null, 2);
 
     const prompt = `あなたは中小企業診断士の資格を持つ優秀な経営コンサルタントです。
-    以下の【診断用生データ】をすべて読み込み、プロフェッショナルな日本語のプロファイリングレポート（各項目150文字程度）を作成してください。
+    以下の【診断用生データ】をすべて読み込み、プロフェッショナルな日本語のプロファイリングレポート（各項目150〜250文字程度）を作成してください。
 
     【診断用生データ】
     ${dataString}
@@ -83,15 +83,15 @@ const App: React.FC = () => {
     {
       "basicPersonality": "【生データの basicPersonality】を基にした、本質の強みを【250文字程度】で詳細に分析",
       "lifeTrend": "【生データの lifeTrend】を基にした、人生のバイオリズムと長期戦略アドバイスを【200文字程度】でに要約",
-      "femaleTraits": "【生データの femaleTraits】を基にした、対人関係における受容力や感性の特徴を【100文字程度】で記述",
+      "femaleTraits": "【生データの femaleTraits】を基にした、対人関係における受容力や感性の特徴を【100〜150文字程度】で記述",
       "maleTraits": "【生データの maleTraits】を基にした、決断力やリーダーシップの傾向を【100文字程度】で記述",
       "work": "【生データの work】を基にした、具体的なビジネス適性とキャリアプランを【250文字程度】で詳しく提案",
       "psychegram": {
-        "features": "【生データの psychegram.features】を基にした、深層心理の特徴を【100文字程度】で記述",
-        "interpersonal": "【生データの psychegram.interpersonal】を基にした、対人対応・マネジメントの型を【100文字程度】で記述",
-        "action": "【生データの psychegram.action】を基にした、行動特性と実行力の分析を【100文字程度】で記述",
-        "expression": "【生データの psychegram.expression】を基にした、コミュニケーションのスタイルを【100文字程度】で記述",
-        "talent": "【生データの psychegram.talent】を基にした、本人が気づいていない才能・センスを【100文字程度】で記述"
+        "features": "【生データの psychegram.features】を基にした、深層心理の特徴を【100〜150文字程度】で記述",
+        "interpersonal": "【生データの psychegram.interpersonal】を基にした、対人対応・マネジメントの型を【100〜150文字程度】で記述",
+        "action": "【生データの psychegram.action】を基にした、行動特性と実行力の分析を【100〜150文字程度】で記述",
+        "expression": "【生データの psychegram.expression】を基にした、コミュニケーションのスタイルを【100〜150文字程度】で記述",
+        "talent": "【生データの psychegram.talent】を基にした、本人が気づいていない才能・センスを【100〜150文字程度】で記述"
       }
     }`;
 
