@@ -44,7 +44,7 @@ const FeatureItem: React.FC<{ icon: React.ReactNode, title: string, desc: string
 // --- Main App ---
 const App: React.FC = () => {
   const [birthDate, setBirthDate] = useState<string>('');
-  // 【修正ポイント1】性別のStateを追加（初期値：女性）
+  // 性別のState管理
   const [gender, setGender] = useState<'male' | 'female'>('female'); 
   const [result, setResult] = useState<{
     number: number;
@@ -67,11 +67,10 @@ const App: React.FC = () => {
     }
   };
 
-  // 【修正ポイント2】バックエンド呼び出し関数に gender を追加
+  // 【バックエンド呼び出し関数】性別情報をプロンプトに統合
   const getDiagnosisFromBackend = async (animalName: string, groupData: any, selectedGender: 'male' | 'female') => {
     const dataString = JSON.stringify(groupData, null, 2);
     const genderLabel = selectedGender === 'male' ? '男性' : '女性';
-    // 性別に応じた生データのキーを指定
     const genderSpecificKey = selectedGender === 'male' ? 'maleTraits' : 'femaleTraits';
 
     const prompt = `あなたは「動物占い」のキャラクター性と「サイグラム」の構造的分析を融合させる、中小企業診断士の資格を持つ経営コンサルタントです。
@@ -89,17 +88,17 @@ const App: React.FC = () => {
     6. JSONのキー名は以下を厳守し、指定された文字数で記述してください。
 
     {
-      "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（250文字程度）",
+      "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（200〜250文字程度）",
       "lifeTrend": "【生データの lifeTrend】を基にした人生のバイオリズムと戦略アドバイス（200文字程度）",
       "femaleTraits": "対象者が【${genderLabel}】であることを踏まえ、対人関係における受容力や感性の特徴を分析（150文字程度）",
       "maleTraits": "対象者が【${genderLabel}】であることを踏まえ、決断力やリーダーシップの傾向を分析（150文字程度）",
       "work": "【生データの work】を基にした具体的なビジネス適性とキャリアプラン（250文字程度）",
       "psychegram": {
-        "features": "【生データの psychegram.features】を基にした深層心理の特徴（150文字程度）",
-        "interpersonal": "【生データの psychegram.interpersonal】を基にした対人マネジメントの型（150文字程度）",
-        "action": "【生データの psychegram.action】を基にした行動特性と実行力の分析（150文字程度）",
-        "expression": "【生データの psychegram.expression】を基にしたコミュニケーションスタイル（150文字程度）",
-        "talent": "【生データの psychegram.talent】を基にした本人が気づいていない才能・センス（150文字程度）"
+        "features": "【生データの psychegram.features】を基にした深層心理の特徴（150〜200文字程度）",
+        "interpersonal": "【生データの psychegram.interpersonal】を基にした対人マネジメントの型（150〜200文字程度）",
+        "action": "【生データの psychegram.action】を基にした行動特性と実行力の分析（150〜200文字程度）",
+        "expression": "【生データの psychegram.expression】を基にしたコミュニケーションスタイル（150〜200文字程度）",
+        "talent": "【生データの psychegram.talent】を基にした本人が気づいていない才能・センス（150〜200文字程度）"
       }
     }`;
 
@@ -132,7 +131,6 @@ const App: React.FC = () => {
       setResult(null); 
       
       try {
-        // 【修正ポイント3】呼び出し時に現在の性別を渡す
         const content = await getDiagnosisFromBackend(calcResult.animalName, calcResult.groupData, currentGender);
         
         if (!content) throw new Error("Invalid response format");
@@ -169,7 +167,7 @@ const App: React.FC = () => {
 
   const handleReset = () => {
     setBirthDate('');
-    setGender('female'); // リセット時も初期値へ
+    setGender('female');
     setResult(null);
     setError('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -209,7 +207,7 @@ const App: React.FC = () => {
                   行動特性を導き出します。
                 </p>
                 
-                {/* 【修正ポイント4】入力エリアに性別プルダウンを追加 */}
+                {/* 入力エリア：性別プルダウン＋カスタム矢印▼ */}
                 <div className="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
                   <div className="flex-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -228,16 +226,21 @@ const App: React.FC = () => {
                     />
                   </div>
                   
-                  {/* 性別選択プルダウン */}
-                  <select 
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value as 'male' | 'female')}
-                    className="bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 px-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center"
-                    style={{ minWidth: '100px' }}
-                  >
-                    <option value="female">女性</option>
-                    <option value="male">男性</option>
-                  </select>
+                  {/* 性別選択エリア */}
+                  <div className="relative flex items-center min-w-[120px]">
+                    <select 
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value as 'male' | 'female')}
+                      className="w-full bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 pl-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center h-full"
+                    >
+                      <option value="female">女性</option>
+                      <option value="male">男性</option>
+                    </select>
+                    {/* カスタム矢印▼ */}
+                    <div className="absolute right-4 pointer-events-none flex items-center">
+                      <span className="text-[#336d99] text-[10px] transform scale-x-125">▼</span>
+                    </div>
+                  </div>
 
                   <button 
                     onClick={handleDiagnoseClick}
@@ -313,11 +316,13 @@ const App: React.FC = () => {
           {result && (
             <section className="py-20 bg-slate-50 border-t border-slate-200 min-h-screen">
               <div className="max-w-7xl mx-auto px-4 md:px-8">
+                {/* ResultCardに性別情報を渡す */}
                 <ResultCard 
                   animalNumber={result.number} 
                   animalName={result.animalName} 
                   groupCode={result.groupCode}
                   content={result.content}
+                  gender={gender}
                   onRetry={handleReset}
                 />
               </div>
