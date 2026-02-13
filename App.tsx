@@ -247,4 +247,30 @@ const App: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="grid md:grid-cols-3 gap-8">
               <FeatureItem icon={<TrendingUp className="w-6 h-6" />} title="キャリア戦略" desc="自分の勝ちパターンを知るためのパスを設計できます。" />
-              <FeatureItem icon={<Users className="w-6 h-6" />} title="組織マネジメント" desc="自分と他者の違いを理解し、チームの
+              <FeatureItem icon={<Users className="w-6 h-6" />} title="組織マネジメント" desc="自分と他者の違いを理解し、チームの生産性を最大化します。" />
+              <FeatureItem icon={<ShieldCheck className="w-6 h-6" />} title="意思決定基準" desc="迷った時に立ち返るべき自分軸を明確にします。" />
+            </div>
+          </div>
+        </section>
+
+        <div ref={resultRef}>
+          {result && (
+            <section className="py-20 bg-slate-50 border-t border-slate-200 min-h-screen">
+              <div className="max-w-7xl mx-auto px-4 md:px-8">
+                <ResultCard 
+                  animalNumber={result.number} 
+                  animalName={result.animalName} 
+                  groupCode={result.groupCode}
+                  content={result.content}
+                  onRetry={handleReset}
+                />
+              </div>
+            </section>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default App;
