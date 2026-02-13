@@ -131,37 +131,37 @@ const ResultCard: React.FC<ResultCardProps> = ({ animalNumber, animalName, group
            </div>
         </div>
 
-        {/* 5. Deep Analysis Grid (Small Cards) - Using optional chaining for safety */}
-        <div className="md:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+       {/* 5. Deep Analysis Grid (Small Cards) */}
+        <div className="md:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-rose-500">
           <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-rose-500">
             <Heart className="w-4 h-4" /> 深層心理
           </h4>
           <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram?.features || "-"}</p>
         </div>
 
-        <div className="md:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+        <div className="md:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-indigo-500">
           <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-indigo-500">
             <User className="w-4 h-4" /> 対人対応
           </h4>
           <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram?.interpersonal || "-"}</p>
         </div>
 
-        <div className="md:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+        <div className="md:col-span-4 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-orange-500">
           <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-orange-500">
             <Zap className="w-4 h-4" /> 行動特性
           </h4>
           <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram?.action || "-"}</p>
         </div>
         
-        <div className="md:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+        <div className="md:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-teal-500">
           <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-teal-500">
             <MessageCircle className="w-4 h-4" /> コミュニケーション・表現
           </h4>
           <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram?.expression || "-"}</p>
         </div>
 
-        <div className="md:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
-          <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-yellow-500">
+        <div className="md:col-span-6 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border-l-4 border-l-yellow-400">
+          <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-yellow-600">
             <Lightbulb className="w-4 h-4" /> 才能・センス
           </h4>
           <p className="text-slate-600 text-sm leading-relaxed">{content.psychegram?.talent || "-"}</p>
