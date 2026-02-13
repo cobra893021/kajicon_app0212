@@ -44,6 +44,8 @@ const FeatureItem: React.FC<{ icon: React.ReactNode, title: string, desc: string
 // --- Main App ---
 const App: React.FC = () => {
   const [birthDate, setBirthDate] = useState<string>('');
+  // 【修正ポイント1】性別のStateを追加（初期値：女性）
+  const [gender, setGender] = useState<'male' | 'female'>('female'); 
   const [result, setResult] = useState<{
     number: number;
     animalName: string;
@@ -65,12 +67,15 @@ const App: React.FC = () => {
     }
   };
 
-  // 【バックエンド呼び出し関数】
-  const getDiagnosisFromBackend = async (animalName: string, groupData: any) => {
+  // 【修正ポイント2】バックエンド呼び出し関数に gender を追加
+  const getDiagnosisFromBackend = async (animalName: string, groupData: any, selectedGender: 'male' | 'female') => {
     const dataString = JSON.stringify(groupData, null, 2);
+    const genderLabel = selectedGender === 'male' ? '男性' : '女性';
+    // 性別に応じた生データのキーを指定
+    const genderSpecificKey = selectedGender === 'male' ? 'maleTraits' : 'femaleTraits';
 
-   const prompt = `あなたは「動物占い」のキャラクター性と「サイグラム」の構造的分析を融合させる、中小企業診断士の資格を持つ経営コンサルタントです。
-    以下の【診断用生データ】を読み込み、プロフェッショナルなプロファイリングレポートを作成してください。
+    const prompt = `あなたは「動物占い」のキャラクター性と「サイグラム」の構造的分析を融合させる、中小企業診断士の資格を持つ経営コンサルタントです。
+    対象者は【${genderLabel}】です。以下の【診断用生データ】を読み込み、プロフェッショナルなプロファイリングレポートを作成してください。
 
     【診断用生データ】
     ${dataString}
@@ -78,15 +83,16 @@ const App: React.FC = () => {
     【レポート作成の絶対ルール】
     1. 出力テキスト内に「動物の名前（例：猿、チーター等）」や「グループコード（例：A8、F1等）」を一切含めないでください。
     2. 診断の舞台裏を感じさせず、一人の人物に対する「純粋な行動心理分析」としてリライトしてください。
-    3. 各項目は、生データの値をビジネス・マネジメントの観点から要約・補完してください。
-    4. 比率として「動物占いデータ：サイグラムデータ」を「6：4」で構成し、個性を主役に、行動原理を理論で補完するトーンを維持してください。
-    5. JSONのキー名は以下を厳守し、指定された文字数で記述してください。
+    3. 対象者が【${genderLabel}】であることを踏まえ、生データの【${genderSpecificKey}】を重点的に分析に反映させてください。
+    4. 各項目は、生データの値をビジネス・マネジメントの観点から要約・補完してください。
+    5. 比率として「動物占いデータ：サイグラムデータ」を「6：4」で構成してください。
+    6. JSONのキー名は以下を厳守し、指定された文字数で記述してください。
 
     {
       "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（250文字程度）",
       "lifeTrend": "【生データの lifeTrend】を基にした人生のバイオリズムと戦略アドバイス（200文字程度）",
-      "femaleTraits": "【生データの femaleTraits】を基にした対人受容力や感性の特徴（150文字程度）",
-      "maleTraits": "【生データの maleTraits】を基にした決断力やリーダーシップの傾向（150文字程度）",
+      "femaleTraits": "対象者が【${genderLabel}】であることを踏まえ、対人関係における受容力や感性の特徴を分析（150文字程度）",
+      "maleTraits": "対象者が【${genderLabel}】であることを踏まえ、決断力やリーダーシップの傾向を分析（150文字程度）",
       "work": "【生データの work】を基にした具体的なビジネス適性とキャリアプラン（250文字程度）",
       "psychegram": {
         "features": "【生データの psychegram.features】を基にした深層心理の特徴（150文字程度）",
@@ -107,8 +113,8 @@ const App: React.FC = () => {
     const data = await response.json();
     return JSON.parse(data.text);
   };
-  // 【メインの診断実行関数】async を付与
-  const runDiagnosis = useCallback(async (dateStr: string) => {
+
+  const runDiagnosis = useCallback(async (dateStr: string, currentGender: 'male' | 'female') => {
     if (!dateStr || !/^\d{8}$/.test(dateStr)) {
       setError('8桁の生年月日を入力してください');
       return;
@@ -126,8 +132,8 @@ const App: React.FC = () => {
       setResult(null); 
       
       try {
-        // ここで await を使うために runDiagnosis が async である必要があります
-        const content = await getDiagnosisFromBackend(calcResult.animalName, calcResult.groupData);
+        // 【修正ポイント3】呼び出し時に現在の性別を渡す
+        const content = await getDiagnosisFromBackend(calcResult.animalName, calcResult.groupData, currentGender);
         
         if (!content) throw new Error("Invalid response format");
 
@@ -158,11 +164,12 @@ const App: React.FC = () => {
 
   const handleDiagnoseClick = () => {
     if (loading) return; 
-    runDiagnosis(birthDate);
+    runDiagnosis(birthDate, gender);
   };
 
   const handleReset = () => {
     setBirthDate('');
+    setGender('female'); // リセット時も初期値へ
     setResult(null);
     setError('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -175,9 +182,9 @@ const App: React.FC = () => {
     const dateParam = params.get('d');
     if (dateParam && /^\d{8}$/.test(dateParam)) {
       setBirthDate(dateParam);
-      runDiagnosis(dateParam);
+      runDiagnosis(dateParam, gender);
     }
-  }, [runDiagnosis]);
+  }, [runDiagnosis, gender]);
 
   return (
     <div className="min-h-screen font-['Zen_Maru_Gothic'] text-slate-700 bg-white">
@@ -197,12 +204,13 @@ const App: React.FC = () => {
                   <span className={`${accentColor}`}>Kajicon Profiler</span>
                 </h1>
                 
-               <p className="text-base sm:text-lg text-slate-500 leading-relaxed mb-10 max-w-2xl mx-auto xl:mx-0 font-medium">
+                <p className="text-base sm:text-lg text-slate-500 leading-relaxed mb-10 max-w-2xl mx-auto xl:mx-0 font-medium">
                   独自の統計データとAIを融合し、あなたの隠れた才能、<br className="hidden sm:block" />
                   行動特性を導き出します。
                 </p>
                 
-                <div className="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
+                {/* 【修正ポイント4】入力エリアに性別プルダウンを追加 */}
+                <div className="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
                   <div className="flex-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <Search className="h-5 w-5 text-slate-400" />
@@ -219,6 +227,18 @@ const App: React.FC = () => {
                       className="w-full h-full pl-11 pr-4 py-3 sm:py-4 bg-slate-50 hover:bg-white focus:bg-white rounded-xl outline-none text-slate-800 font-bold text-lg tracking-widest placeholder:font-normal placeholder:tracking-normal border border-transparent focus:border-blue-200 focus:ring-4 focus:ring-blue-50 transition-all"
                     />
                   </div>
+                  
+                  {/* 性別選択プルダウン */}
+                  <select 
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value as 'male' | 'female')}
+                    className="bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 px-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center"
+                    style={{ minWidth: '100px' }}
+                  >
+                    <option value="female">女性</option>
+                    <option value="male">男性</option>
+                  </select>
+
                   <button 
                     onClick={handleDiagnoseClick}
                     disabled={loading}
