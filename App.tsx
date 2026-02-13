@@ -85,15 +85,15 @@ const App: React.FC = () => {
     {
       "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（250文字程度）",
       "lifeTrend": "【生データの lifeTrend】を基にした人生のバイオリズムと戦略アドバイス（200文字程度）",
-      "femaleTraits": "【生データの femaleTraits】を基にした対人受容力や感性の特徴（150文字程度）",
-      "maleTraits": "【生データの maleTraits】を基にした決断力やリーダーシップの傾向（150文字程度）",
+      "femaleTraits": "【生データの femaleTraits】を基にした対人受容力や感性の特徴（150〜200文字程度）",
+      "maleTraits": "【生データの maleTraits】を基にした決断力やリーダーシップの傾向（150〜200文字程度）",
       "work": "【生データの work】を基にした具体的なビジネス適性とキャリアプラン（250文字程度）",
       "psychegram": {
-        "features": "【生データの psychegram.features】を基にした深層心理の特徴（150文字程度）",
-        "interpersonal": "【生データの psychegram.interpersonal】を基にした対人マネジメントの型（150文字程度）",
-        "action": "【生データの psychegram.action】を基にした行動特性と実行力の分析（150文字程度）",
-        "expression": "【生データの psychegram.expression】を基にしたコミュニケーションスタイル（150文字程度）",
-        "talent": "【生データの psychegram.talent】を基にした本人が気づいていない才能・センス（150文字程度）"
+        "features": "【生データの psychegram.features】を基にした深層心理の特徴（150〜200文字程度）",
+        "interpersonal": "【生データの psychegram.interpersonal】を基にした対人マネジメントの型（150〜200文字程度）",
+        "action": "【生データの psychegram.action】を基にした行動特性と実行力の分析（150〜200文字程度）",
+        "expression": "【生データの psychegram.expression】を基にしたコミュニケーションスタイル（150〜200文字程度）",
+        "talent": "【生データの psychegram.talent】を基にした本人が気づいていない才能・センス（150〜200文字程度）"
       }
     }`;
 
