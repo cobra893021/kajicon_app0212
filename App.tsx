@@ -81,11 +81,11 @@ const App: React.FC = () => {
     3. JSONのキー名は、以下の通りに厳守してください。
 
     {
-      "basicPersonality": "【生データの basicPersonality】を基にした、本質の強みと性格分析",
-      "lifeTrend": "【生データの lifeTrend】を基にした、人生のバイオリズムと長期戦略アドバイス",
-      "femaleTraits": "【生データの femaleTraits】を基にした、対人関係における受容力や感性の特徴",
-      "maleTraits": "【生データの maleTraits】を基にした、決断力やリーダーシップの傾向",
-      "work": "【生データの work】を基にした、具体的なビジネス適性とキャリアプラン",
+      "basicPersonality": "【生データの basicPersonality】を基にした、本質の強みを【250文字程度】で詳細に分析",
+      "lifeTrend": "【生データの lifeTrend】を基にした、人生のバイオリズムと長期戦略アドバイスを【200文字程度】でに要約",
+      "femaleTraits": "【生データの femaleTraits】を基にした、対人関係における受容力や感性の特徴を【100文字程度】で記述",
+      "maleTraits": "【生データの maleTraits】を基にした、決断力やリーダーシップの傾向を【100文字程度】で記述",
+      "work": "【生データの work】を基にした、具体的なビジネス適性とキャリアプランを【250文字程度】で詳しく提案",
       "psychegram": {
         "features": "【生データの psychegram.features】を基にした、深層心理の特徴",
         "interpersonal": "【生データの psychegram.interpersonal】を基にした、対人対応・マネジメントの型",
