@@ -44,7 +44,6 @@ const FeatureItem: React.FC<{ icon: React.ReactNode, title: string, desc: string
 // --- Main App ---
 const App: React.FC = () => {
   const [birthDate, setBirthDate] = useState<string>('');
-  // 性別のState管理
   const [gender, setGender] = useState<'male' | 'female'>('female'); 
   const [result, setResult] = useState<{
     number: number;
@@ -67,7 +66,6 @@ const App: React.FC = () => {
     }
   };
 
-  // 【バックエンド呼び出し関数】性別情報をプロンプトに統合
   const getDiagnosisFromBackend = async (animalName: string, groupData: any, selectedGender: 'male' | 'female') => {
     const dataString = JSON.stringify(groupData, null, 2);
     const genderLabel = selectedGender === 'male' ? '男性' : '女性';
@@ -88,17 +86,17 @@ const App: React.FC = () => {
     6. JSONのキー名は以下を厳守し、指定された文字数で記述してください。
 
     {
-      "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（200〜250文字程度）",
+      "basicPersonality": "【生データの basicPersonality】を主軸にした本質の強み分析（250文字程度）",
       "lifeTrend": "【生データの lifeTrend】を基にした人生のバイオリズムと戦略アドバイス（200文字程度）",
       "femaleTraits": "対象者が【${genderLabel}】であることを踏まえ、対人関係における受容力や感性の特徴を分析（150文字程度）",
       "maleTraits": "対象者が【${genderLabel}】であることを踏まえ、決断力やリーダーシップの傾向を分析（150文字程度）",
       "work": "【生データの work】を基にした具体的なビジネス適性とキャリアプラン（250文字程度）",
       "psychegram": {
-        "features": "【生データの psychegram.features】を基にした深層心理の特徴（150〜200文字程度）",
-        "interpersonal": "【生データの psychegram.interpersonal】を基にした対人マネジメントの型（150〜200文字程度）",
-        "action": "【生データの psychegram.action】を基にした行動特性と実行力の分析（150〜200文字程度）",
-        "expression": "【生データの psychegram.expression】を基にしたコミュニケーションスタイル（150〜200文字程度）",
-        "talent": "【生データの psychegram.talent】を基にした本人が気づいていない才能・センス（150〜200文字程度）"
+        "features": "【生データの psychegram.features】を基にした深層心理の特徴（150文字程度）",
+        "interpersonal": "【生データの psychegram.interpersonal】を基にした対人マネジメントの型（150文字程度）",
+        "action": "【生データの psychegram.action】を基にした行動特性と実行力の分析（150文字程度）",
+        "expression": "【生データの psychegram.expression】を基にしたコミュニケーションスタイル（150文字程度）",
+        "talent": "【生データの psychegram.talent】を基にした本人が気づいていない才能・センス（150文字程度）"
       }
     }`;
 
@@ -207,9 +205,14 @@ const App: React.FC = () => {
                   行動特性を導き出します。
                 </p>
                 
-                {/* 入力エリア：性別プルダウン＋カスタム矢印▼ */}
-                <div className="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
-                  <div className="flex-1 relative">
+                {/* 【入力エリア】
+                  w-full と max-w-3xl で全体の幅を確保。
+                  sm:flex-row で横一列に配置し、両端を揃える。
+                */}
+                <div className="bg-white p-2 sm:p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200 flex flex-col sm:flex-row gap-3 w-full max-w-3xl mx-auto xl:mx-0 transition-transform hover:scale-[1.01]">
+                  
+                  {/* 生年月日：flex-[2] で多めに幅を取る */}
+                  <div className="flex-[2] relative min-w-[180px]">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <Search className="h-5 w-5 text-slate-400" />
                     </div>
@@ -226,31 +229,33 @@ const App: React.FC = () => {
                     />
                   </div>
                   
-                  {/* 性別選択エリア */}
-                  <div className="relative flex items-center min-w-[120px]">
+                  {/* 性別選択：flex-1。relative と appearance-none でカスタム矢印を表示 */}
+                  <div className="flex-1 relative flex items-center min-w-[100px] sm:min-w-[120px]">
                     <select 
                       value={gender}
                       onChange={(e) => setGender(e.target.value as 'male' | 'female')}
-                      className="w-full bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 pl-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center h-full"
+                      className="w-full bg-slate-50 border border-slate-100 text-[#336d99] font-bold py-3 pl-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all cursor-pointer appearance-none text-center h-full text-lg"
                     >
                       <option value="female">女性</option>
                       <option value="male">男性</option>
                     </select>
-                    {/* カスタム矢印▼ */}
+                    {/* カスタム▼マーク */}
                     <div className="absolute right-4 pointer-events-none flex items-center">
                       <span className="text-[#336d99] text-[10px] transform scale-x-125">▼</span>
                     </div>
                   </div>
 
+                  {/* 診断ボタン：flex-[1.2] で調整 */}
                   <button 
                     onClick={handleDiagnoseClick}
                     disabled={loading}
-                    className={`${bgAccentColor} hover:bg-[#254e6e] text-white px-8 py-3 sm:py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap text-lg disabled:opacity-70 disabled:cursor-not-allowed`}
+                    className={`flex-[1.2] ${bgAccentColor} hover:bg-[#254e6e] text-white px-6 py-3 sm:py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap text-lg disabled:opacity-70 disabled:cursor-not-allowed`}
                   >
-                    無料で分析
+                    無料診断
                     <ChevronRight className="w-5 h-5" />
                   </button>
                 </div>
+
                 {error && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm font-bold inline-flex items-center animate-pulse">
                     <AlertCircle className="w-4 h-4 mr-2" />
@@ -258,7 +263,7 @@ const App: React.FC = () => {
                   </div>
                 )}
                 
-                <p className="text-xs text-slate-400 mt-4 font-medium">
+                <p className="text-xs text-slate-400 mt-4 font-medium text-center xl:text-left">
                   ※ 入力情報は分析のみに使用され、保存されません
                 </p>
               </div>
@@ -316,7 +321,6 @@ const App: React.FC = () => {
           {result && (
             <section className="py-20 bg-slate-50 border-t border-slate-200 min-h-screen">
               <div className="max-w-7xl mx-auto px-4 md:px-8">
-                {/* ResultCardに性別情報を渡す */}
                 <ResultCard 
                   animalNumber={result.number} 
                   animalName={result.animalName} 
